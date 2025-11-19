@@ -1,0 +1,34 @@
+version: '3.9'
+
+services:
+  controller:
+    build: ./slurm
+    container_name: slurm-controller
+    hostname: controller
+    environment:
+      ROLE: controller
+    volumes:
+      - ./slurm/slurm.conf:/etc/slurm/slurm.conf
+      - ./slurm/munge.key:/etc/munge/munge.key
+    networks:
+      slurmnet:
+        ipv4_address: 172.20.0.2
+
+  compute1:
+    build: ./slurm
+    container_name: slurm-compute1
+    hostname: compute1
+    environment:
+      ROLE: compute
+    volumes:
+      - ./slurm/slurm.conf:/etc/slurm/slurm.conf
+      - ./slurm/munge.key:/etc/munge/munge.key
+    networks:
+      slurmnet:
+        ipv4_address: 172.20.0.3
+
+networks:
+  slurmnet:
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
